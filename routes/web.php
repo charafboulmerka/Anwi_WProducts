@@ -22,3 +22,7 @@ Route::get('/productsAdmin',[ProductsController::class,'productsAdmin']);
 Route::get('/products',[ProductsController::class,'products']);
 Route::post('/find',[ProductsController::class,'find'])->name('find');
 Route::get('/product/{id}',[ProductsController::class,'product'])->name('product');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
