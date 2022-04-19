@@ -296,6 +296,8 @@
         return pre_build;
     }
 
+
+
     function PriceStore(id){
       const db = firebase.database();
       let p_store = prompt("Prix Détail", "");

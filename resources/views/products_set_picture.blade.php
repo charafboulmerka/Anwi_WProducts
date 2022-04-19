@@ -27,6 +27,7 @@
 <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-firestore.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-storage.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
 
     <script>
@@ -183,6 +184,7 @@
             var price_store = childData.price_store;
             var price_final = childData.price_final;
             var description = childData.description;
+            var pic_final = childData.pic_final;
             if(date==null){
               var date = childData.date;
             }
@@ -191,7 +193,7 @@
             //console.log(id);
             template = build(1);
             template += putPicture(pic);
-            template += putData(title,rp,id,price,price_store,price_final,description,store,date,type);
+            template += putData(title,rp,id,price,price_store,price_final,description,store,date,type,pic_final);
             template += build(0);
             
             $('#row').append(template);
@@ -276,52 +278,74 @@
     }
  
 
-    function putData(title,rp,id,price,price_store,price_final,description,store,date,type){
+    function putData(title,rp,id,price,price_store,price_final,description,store,date,type,pic_final){
       console.log(date);
         var pre_build = '';
-        pre_build += '<div class="card-body" style="min-height: 350px;">';
+        pre_build += '<div class="card-body" style="min-height: 180px;">';
             pre_build += '<b><p class="card-title">'+title+'</p></b>';
             pre_build += '<p class="card-title">Boutique : '+store+'</p>';
             pre_build += '<p class="card-title">Prix de Gros : '+price+' DA</p>';
-
-            if(price_store!=null){
-              pre_build += '<p class="card-title">Prix Détail : '+price_store+' DA</p>';
+            if(pic_final!=null){
+              pre_build += '<p class="card-title text-danger">Picture : Done</p>';
             }
-            if(price_final!=null){
-              pre_build += '<p class="card-title text-danger">Prix Anwi : '+price_final+' DA</p>';
-            }
-            
-            /*
-            if(description==null){
-              pre_build += '<button id="btn_description_'+id+'" style="font-size : 15px;" class="btn btn-primary btn-lg col-12" type="button" onclick="productDescription(\'' + id + '\');">Description</button><br><br>';
-            }
+            pre_build += '<p class="card-title">Published At : '+date+'</p>';
 
 
-            if(price_store==null){
-              pre_build += '<button id="btn_p_store_'+id+'" style="font-size : 15px;" class="btn btn-primary btn-lg col-12" type="button" onclick="PriceStore(\'' + id + '\');">Prix Détail</button><br><br>';
-            }
-            */
-
-            if(price_final==null){
-              pre_build += '<button id="btn_p_final_'+id+'" style="font-size : 15px;" class="btn btn-primary btn-lg col-12" type="button" onclick="PriceFinal(\'' + id + '\');">Prix Final</button><br><br>';
+            if(pic_final==null){
+              pre_build += '<br><div id="f_'+id+'"><input id="files_'+id+'" style="font-size : 15px;"  type="file" />';
+              pre_build += '<br><br><button id="url " style="font-size : 15px;" class="btn btn-primary btn-lg col-12" type="button" onclick="uploadimage(\'' + id + '\');">UPLOAD</button></div>';
             }else{
-              pre_build += '<button id="btn_p_final_'+id+'" style="font-size : 15px;" class="btn btn-primary btn-lg col-12" type="button" onclick="PriceFinal(\'' + id + '\');">Modifer Prix Final</button><br><br>';
-
+              pre_build += '<br><div id="f_'+id+'"><input id="files_'+id+'" style="font-size : 15px;"  type="file" />';
+              pre_build += '<br><br><button id="url " style="font-size : 15px;" class="btn btn-primary btn-lg col-12" type="button" onclick="uploadimage(\'' + id + '\');">UPDATE</button></div>';
             }
-            
 
-            if(type!=3){
-              pre_build += '<button id="btn_p_approve_'+id+'" style="font-size : 15px;" class="btn btn-primary btn-lg col-12" type="button" onclick="ApproveProduct(\'' + id + '\');">Approuver</button><br>'
-            }
-            
-            pre_build += '<br><p class="card-title">Published At : '+date+'</p>';
-            
             pre_build += '</div>';   
         
        
 
         return pre_build;
     }
+
+          //uploading file in storage
+        function uploadimage(id){
+          var dialog = bootbox.dialog({
+              message: '<p class="text-center mb-0"><i class="fa fa-spin fa-cog"></i> Please wait while we do something...</p>',
+              closeButton: false
+          });
+                      
+          // do something in the background
+          
+        var storage = firebase.storage();
+        var file=document.getElementById("files_"+id).files[0];
+        const d = new Date();
+        let time = d.getTime();
+        var storageref=storage.ref();
+        var thisref=storageref.child("PicsFinal").child(file.name+"_"+time).put(file);
+        thisref.on('state_changed',function(snapshot) {
+      
+      
+        }, function(error) {
+        
+      }, function() {
+        // Uploaded completed successfully, now we can get the download URL
+        thisref.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+          //getting url of image
+          document.getElementById("url ").value=downloadURL;
+          dialog.modal('hide');
+
+          setFinalUrl(id,downloadURL);
+        });
+        });
+      
+        // Get values
+        // var url = getInputVal('url');
+        // Save message
+        // saveMessage(url);
+      }
+
+
+ 
+ 
 
 
     function productDescription(id){
@@ -375,34 +399,34 @@
       bootbox.prompt({
         title: "Prix Final",
         inputType: 'number',
-        callback: function (p_final) {
-            console.log(p_final);
-            if (p_final == null || p_final == "") {
-            
-          } else {
-            db.ref("Products/"+id+"/price_final").set(parseFloat(p_final), function(error) {
-          if (error) {
-            alert("Data could not be saved." + error);
-          } else {
-            document.getElementById("btn_p_final_"+id).style.display = 'none';
-          }
-        });
-          }
-
-        }
+       callback: function (p_final) {
+        console.log(p_final);
+        if (p_final == null || p_final == "") {
+        
+        } else {
+        db.ref("Products/"+id+"/price_final").set(parseFloat(p_final), function(error) {
+       if (error) {
+         alert("Data could not be saved." + error);
+        } else {
+        document.getElementById("btn_p_final_"+id).style.display = 'none';
+            }
           });
+            }
+
+          }
+            });
 
     }
 
-    function ApproveProduct(id){
-        const db = firebase.database();
-        db.ref("Products/"+id+"/type").set("4", function(error) {
-        if (error) {
-          alert("Data could not be saved." + error);
-        } else {
-          document.getElementById("btn_p_approve_"+id).style.display = 'none';
-        }
-      });
+    function setFinalUrl(id,url){
+      const db = firebase.database();
+      db.ref("Products/"+id+"/pic_final").set(url, function(error) {
+      if (error) {
+        alert("Data could not be saved." + error);
+      } else {
+        document.getElementById("f_"+id).style.display = 'none';
+      }
+       });
 
     }
 

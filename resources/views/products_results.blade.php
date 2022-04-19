@@ -1,5 +1,6 @@
 <html>
   <head>
+    <meta charset="utf-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -61,50 +62,7 @@
        @endphp
        <div id="work-in-progress"><div class="work-spinner"><script>$('#work-in-progress').hide();</script></div></div>
 
-       <!--
-    <div class="s003">
-
-      <form>
-        <div class="inner-form">
-          <div class="input-field first-wrap">
-            <div class="input-select">
-              <select id="mSelect" data-trigger="" name="choices-single-defaul">
-                <option placeholder="">All Categories</option>
-                <option >maison cuisine jardin</option>
-                <option>beaute hygiene sante</option>
-                <option>fashion mode</option>
-                <option>electronique</option>
-                <option>sports loisirs</option>
-                <option>telephone tablette</option>
-                <option>bebe puericulture</option>
-                <option>ordinateurs accessoires informatique</option>
-                <option>mlp jeux jouets gaming</option>
-                <option>automobile outils</option>
-                <option>terrasse jardin exterieur</option>
-              </select>
-            </div>
-          </div>
-          <div class="input-field second-wrap">
-            <input id="search_keyword" type="text" placeholder="Enter Keywords?" />
-          </div>
-          <div class="input-field third-wrap">
-            <button class="btn-search" type="button" onclick="start_search()">
-              <svg class="svg-inline--fa fa-search fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                <path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
-              </svg>
-            </button>
-           
-            
-
-
-          </div>
-          
-          
-        </div>
-      </form>
-      
-    </div>
-    -->
+    
     <div class="container">
         <div class="row form-group">
                 <label for="date" class="col-sm-1 col-form-label">Date</label>
@@ -183,6 +141,7 @@
             var price_store = childData.price_store;
             var price_final = childData.price_final;
             var description = childData.description;
+            var pic_final = childData.pic_final;
             if(date==null){
               var date = childData.date;
             }
@@ -190,8 +149,12 @@
             var id = childData.id;
             //console.log(id);
             template = build(1);
-            template += putPicture(pic);
-            template += putData(title,rp,id,price,price_store,price_final,description,store,date,type);
+            if(pic_final==null || pic_final==""){
+              template += putPicture(pic);
+            }else{
+              template += putPicture(pic_final);
+            }
+            template += putData(title,rp,id,price,price_store,price_final,description,store,date,type,pic_final);
             template += build(0);
             
             $('#row').append(template);
@@ -201,52 +164,6 @@
           
         });
        
-   /*
-          $.ajax({
-            url: "{{route('find')}}",
-            data:{
-                keyword:keyword,
-                category:category,
-                _token:token
-            },
-            type: 'post',
-            beforeSend: function(){
-              //$("#loading_screen").show();
-              showLoadingBar(true);
-            },
- 
-            
-            success: function(response){
-                //console.log(response);
-                var template = '';
-                var count = 0;
-                console.log(response);
-                $('#row').html("");
-                for(let i=0;i<response.length;i++){
-                    var pic = response[i].picture;
-                    var title = response[i].title;
-                    var rp = response[i];
-                    var id = response[i].id;
-                    console.log(id);
-                    template = build(1);
-                    template += putPicture(pic);
-                    template += putTitle(title,rp,id);
-                    template += build(0);
-                    
-                    $('#row').append(template);
-                  
-                }
-                
-                console.log(template);
-                
-                },
-                complete: function(){
-              //$("#loading_screen").hide();
-              showLoadingBar(false);
-            }
-
-            });*/
-            
       }
 
       start_search(getToday());
@@ -276,7 +193,7 @@
     }
  
 
-    function putData(title,rp,id,price,price_store,price_final,description,store,date,type){
+    function putData(title,rp,id,price,price_store,price_final,description,store,date,type,pic_final){
       console.log(date);
         var pre_build = '';
         pre_build += '<div class="card-body" style="min-height: 350px;">';
@@ -284,11 +201,16 @@
             pre_build += '<p class="card-title">Boutique : '+store+'</p>';
             pre_build += '<p class="card-title">Prix de Gros : '+price+' DA</p>';
 
-            if(price_store!=null){
-              pre_build += '<p class="card-title">Prix Détail : '+price_store+' DA</p>';
-            }
             if(price_final!=null){
-              pre_build += '<p class="card-title text-danger">Prix Anwi : '+price_final+' DA</p>';
+              pre_build += '<p class="card-title">Prix Final : '+price_final+' DA</p>';
+            }else{
+              pre_build += '<p class="card-title">Prix Final : NULL</p>';
+            }
+
+            if(description!=null){
+              pre_build += '<p class="card-title">Description : <a href="#" onclick="productShowDescription(' + description + ');">Done</a></p>';
+            }else{
+              pre_build += '<p class="card-title">Description : NULL</p>';
             }
             
             /*
@@ -324,27 +246,8 @@
     }
 
 
-    function productDescription(id){
-      const db = firebase.database();
-      bootbox.prompt({
-      title: "Description",
-      inputType: 'textarea',
-          callback: function (des) {
-              console.log(des);
-        if (des == null || des == "") {
-        
-        } else {
-          db.ref("Products/"+id+"/description").set(des, function(error) {
-        if (error) {
-          alert("Data could not be saved." + error);
-        } else {
-          document.getElementById("btn_p_store_"+id).style.display = 'none';
-        }
-      });
-        }
-          }
-      });
-
+    function productShowDescription(){
+      bootbox.alert("This is the default alert!");
     }
 
     function PriceStore(id){

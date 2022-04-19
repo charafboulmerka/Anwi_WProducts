@@ -201,52 +201,6 @@
           
         });
        
-   /*
-          $.ajax({
-            url: "{{route('find')}}",
-            data:{
-                keyword:keyword,
-                category:category,
-                _token:token
-            },
-            type: 'post',
-            beforeSend: function(){
-              //$("#loading_screen").show();
-              showLoadingBar(true);
-            },
- 
-            
-            success: function(response){
-                //console.log(response);
-                var template = '';
-                var count = 0;
-                console.log(response);
-                $('#row').html("");
-                for(let i=0;i<response.length;i++){
-                    var pic = response[i].picture;
-                    var title = response[i].title;
-                    var rp = response[i];
-                    var id = response[i].id;
-                    console.log(id);
-                    template = build(1);
-                    template += putPicture(pic);
-                    template += putTitle(title,rp,id);
-                    template += build(0);
-                    
-                    $('#row').append(template);
-                  
-                }
-                
-                console.log(template);
-                
-                },
-                complete: function(){
-              //$("#loading_screen").hide();
-              showLoadingBar(false);
-            }
-
-            });*/
-            
       }
 
       start_search(getToday());
@@ -279,42 +233,27 @@
     function putData(title,rp,id,price,price_store,price_final,description,store,date,type){
       console.log(date);
         var pre_build = '';
-        pre_build += '<div class="card-body" style="min-height: 350px;">';
+        pre_build += '<div class="card-body" style="min-height: 180px;">';
             pre_build += '<b><p class="card-title">'+title+'</p></b>';
             pre_build += '<p class="card-title">Boutique : '+store+'</p>';
             pre_build += '<p class="card-title">Prix de Gros : '+price+' DA</p>';
 
             if(price_store!=null){
-              pre_build += '<p class="card-title">Prix Détail : '+price_store+' DA</p>';
+              pre_build += '<p class="card-title text-danger">Prix Détail : '+price_store+' DA</p>';
             }
-            if(price_final!=null){
-              pre_build += '<p class="card-title text-danger">Prix Anwi : '+price_final+' DA</p>';
-            }
-            
             /*
-            if(description==null){
-              pre_build += '<button id="btn_description_'+id+'" style="font-size : 15px;" class="btn btn-primary btn-lg col-12" type="button" onclick="productDescription(\'' + id + '\');">Description</button><br><br>';
+            if(price_final!=null){
+              pre_build += '<p class="card-title">Prix Anwi : '+price_final+' DA</p>';
             }
-
+            */         
+             pre_build += '<p class="card-title">Published At : '+date+'</p>';
 
             if(price_store==null){
-              pre_build += '<button id="btn_p_store_'+id+'" style="font-size : 15px;" class="btn btn-primary btn-lg col-12" type="button" onclick="PriceStore(\'' + id + '\');">Prix Détail</button><br><br>';
-            }
-            */
-
-            if(price_final==null){
-              pre_build += '<button id="btn_p_final_'+id+'" style="font-size : 15px;" class="btn btn-primary btn-lg col-12" type="button" onclick="PriceFinal(\'' + id + '\');">Prix Final</button><br><br>';
+              pre_build += '<br><button id="btn_p_store_'+id+'" style="font-size : 15px;" class="btn btn-primary btn-lg col-12" type="button" onclick="PriceStore(\'' + id + '\');">Prix Détail</button>';
             }else{
-              pre_build += '<button id="btn_p_final_'+id+'" style="font-size : 15px;" class="btn btn-primary btn-lg col-12" type="button" onclick="PriceFinal(\'' + id + '\');">Modifer Prix Final</button><br><br>';
-
+              pre_build += '<br><button id="btn_p_store_'+id+'" style="font-size : 15px;" class="btn btn-primary btn-lg col-12" type="button" onclick="PriceStore(\'' + id + '\');">Modifer Prix Détail</button>';
             }
-            
 
-            if(type!=3){
-              pre_build += '<button id="btn_p_approve_'+id+'" style="font-size : 15px;" class="btn btn-primary btn-lg col-12" type="button" onclick="ApproveProduct(\'' + id + '\');">Approuver</button><br>'
-            }
-            
-            pre_build += '<br><p class="card-title">Published At : '+date+'</p>';
             
             pre_build += '</div>';   
         
@@ -373,36 +312,36 @@
     function PriceFinal(id){
       const db = firebase.database();
       bootbox.prompt({
-        title: "Prix Final",
-        inputType: 'number',
-        callback: function (p_final) {
-            console.log(p_final);
-            if (p_final == null || p_final == "") {
-            
-          } else {
-            db.ref("Products/"+id+"/price_final").set(parseFloat(p_final), function(error) {
-          if (error) {
-            alert("Data could not be saved." + error);
-          } else {
-            document.getElementById("btn_p_final_"+id).style.display = 'none';
-          }
-        });
-          }
+    title: "Prix Final",
+    inputType: 'number',
+    callback: function (p_final) {
+        console.log(p_final);
+        if (p_final == null || p_final == "") {
+        
+      } else {
+        db.ref("Products/"+id+"/price_final").set(parseFloat(p_final), function(error) {
+      if (error) {
+        alert("Data could not be saved." + error);
+      } else {
+        document.getElementById("btn_p_final_"+id).style.display = 'none';
+      }
+    });
+      }
 
-        }
-          });
+    }
+      });
 
     }
 
     function ApproveProduct(id){
-        const db = firebase.database();
-        db.ref("Products/"+id+"/type").set("4", function(error) {
-        if (error) {
-          alert("Data could not be saved." + error);
-        } else {
-          document.getElementById("btn_p_approve_"+id).style.display = 'none';
-        }
-      });
+      const db = firebase.database();
+      db.ref("Products/"+id+"/type").set("4", function(error) {
+      if (error) {
+        alert("Data could not be saved." + error);
+      } else {
+        document.getElementById("btn_p_approve_"+id).style.display = 'none';
+      }
+    });
 
     }
 
