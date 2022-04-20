@@ -19,7 +19,10 @@ Route::get('/', function () {
 });
 
 Route::get('/productsResults',[ProductsController::class,'productsResults'])->middleware('auth');
-Route::get('/productsAdmin',[ProductsController::class,'productsAdmin'])->middleware('auth');
+
+Route::get('/productsApprove',[ProductsController::class,'productsApprove'])->middleware('auth');
+Route::get('/productsSetFinalPrice',[ProductsController::class,'productsSetFinalPrice'])->middleware('auth');
+
 Route::get('/productsSetPrice',[ProductsController::class,'productsSetPrice'])->middleware('auth');
 Route::get('/productsSetDescription',[ProductsController::class,'productsSetDescription'])->middleware('auth');
 Route::get('/productsSetPicture',[ProductsController::class,'productsSetPicture'])->middleware('auth');
@@ -28,6 +31,10 @@ Route::get('/products',[ProductsController::class,'products'])->middleware('auth
 Route::post('/find',[ProductsController::class,'find'])->name('find')->middleware('auth');
 Route::get('/product/{id}',[ProductsController::class,'product'])->name('product')->middleware('auth');
 
-Auth::routes();
+Auth::routes([
+    'register' => false, // Registration Routes...
+    'reset' => false, // Password Reset Routes...
+    'verify' => false, // Email Verification Routes...
+  ]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');

@@ -54,6 +54,10 @@
       justify-content: center;
         margin:20px;
       }
+
+      textarea {
+      height: 300px;
+      }
     </style>
 
        @php 
@@ -174,7 +178,7 @@
             var childData = response.val();
            // console.log(childKey);
             var type = childData.type;
-            if(type==1){
+            if(type==4){
               var pic = childData.imageURL;
             var title = childData.title;
             var price = childData.price;
@@ -316,13 +320,15 @@
       const db = firebase.database();
       bootbox.prompt({
       title: "Description",
+      size: 'large',
       inputType: 'textarea',
           callback: function (des) {
               console.log(des);
         if (des == null || des == "") {
         
         } else {
-          db.ref("Products/"+id+"/description").set(des, function(error) {
+          let htmlDes = des.replace(/\n/g, "<br />")
+          db.ref("Products/"+id+"/description").set(htmlDes, function(error) {
         if (error) {
           alert("Data could not be saved." + error);
         } else {

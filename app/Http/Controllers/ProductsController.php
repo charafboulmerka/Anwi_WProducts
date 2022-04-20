@@ -25,8 +25,14 @@ class ProductsController extends Controller
         return view('products_set_picture');
     }
 
-    public function productsAdmin(){
-        return view('products_admin');
+
+
+    public function productsApprove(){
+        return view('products_admin_approve');
+    }
+
+    public function productsSetFinalPrice(){
+        return view('products_admin_finalprice');
     }
 
     public function productsResults(){

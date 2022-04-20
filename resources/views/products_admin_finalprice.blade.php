@@ -174,7 +174,7 @@
             var childData = response.val();
            // console.log(childKey);
             var type = childData.type;
-            if(type==1){
+            if(type==4){
               var pic = childData.imageURL;
             var title = childData.title;
             var price = childData.price;
@@ -183,6 +183,8 @@
             var price_store = childData.price_store;
             var price_final = childData.price_final;
             var description = childData.description;
+            var pic_final = childData.pic_final;
+            
             if(date==null){
               var date = childData.date;
             }
@@ -190,7 +192,11 @@
             var id = childData.id;
             //console.log(id);
             template = build(1);
-            template += putPicture(pic);
+            if(pic_final==null || pic_final==""){
+              template += putPicture(pic);
+            }else{
+              template += putPicture(pic_final);
+            }
             template += putData(title,rp,id,price,price_store,price_final,description,store,date,type);
             template += build(0);
             

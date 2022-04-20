@@ -174,7 +174,7 @@
             var childData = response.val();
            // console.log(childKey);
             var type = childData.type;
-            if(type==1){
+            if(type==4){
               var pic = childData.imageURL;
             var title = childData.title;
             var price = childData.price;
