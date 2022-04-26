@@ -15,8 +15,16 @@ use App\Http\Controllers\ProductsController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+  if(Auth::user()!=null){
+    return view('home');
+  }else{
+    return view('auth.login');
+  }
 });
+Route::get('/addProducts',[ProductsController::class,'addProducts'])->middleware('auth');
+
+Route::get('/addObjectives',[ProductsController::class,'addObjectives'])->middleware('auth');
+
 
 Route::get('/productsResults',[ProductsController::class,'productsResults'])->middleware('auth');
 
@@ -27,9 +35,7 @@ Route::get('/productsSetPrice',[ProductsController::class,'productsSetPrice'])->
 Route::get('/productsSetDescription',[ProductsController::class,'productsSetDescription'])->middleware('auth');
 Route::get('/productsSetPicture',[ProductsController::class,'productsSetPicture'])->middleware('auth');
 
-Route::get('/products',[ProductsController::class,'products'])->middleware('auth');
-Route::post('/find',[ProductsController::class,'find'])->name('find')->middleware('auth');
-Route::get('/product/{id}',[ProductsController::class,'product'])->name('product')->middleware('auth');
+Route::get('/arwi',[ProductsController::class,'products'])->middleware('auth');
 
 Auth::routes([
     'register' => false, // Registration Routes...

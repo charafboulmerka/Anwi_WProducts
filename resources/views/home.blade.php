@@ -15,6 +15,24 @@
                     @endif
 
                     <!--{{ __('You are logged in!') }}-->
+                    @if(Auth::user()->role == "charaf")
+                    <a type="button" class="btn btn-primary btn-lg btn-block col-12" href="{{url('productsApprove')}}">Approve Products</a><br><br>
+
+                    <a type="button" class="btn btn-warning btn-lg btn-block col-12" href="{{url('productsSetPrice')}}">Set Products Price</a><br><br>
+
+                    <a type="button" class="btn btn-danger btn-lg btn-block col-12" href="{{url('productsSetDescription')}}">Set Products Description</a><br><br>
+
+                    <a type="button" class="btn btn-info btn-lg btn-block col-12" href="{{url('productsSetPicture')}}">Set Products Picture</a><br><br>
+
+                    <a type="button" class="btn btn-secondary btn-lg btn-block col-12" href="{{url('productsSetFinalPrice')}}">Set Products Final Price</a><br><br>
+                    
+                    <a type="button" class="btn btn-success btn-lg btn-block col-12" href="{{url('productsResults')}}">View Products Results</a><br><br>
+
+                    <a type="button" class="btn btn-success btn-lg btn-block col-12" href="{{url('productsResults')}}">Add Products</a><br><br>
+
+                    <a type="button" class="btn btn-success btn-lg btn-block col-12" href="{{url('productsResults')}}">Add Objectives</a><br><br>
+                    @endif
+
                     @if(Auth::user()->role == "admin")
                     <a type="button" class="btn btn-primary btn-lg btn-block col-12" href="{{url('productsApprove')}}">Approve Products</a><br><br>
                     
@@ -23,12 +41,15 @@
                     <a type="button" class="btn btn-success btn-lg btn-block col-12" href="{{url('productsResults')}}">View Products Results</a><br><br>
                     @endif
 
-                    @if(Auth::user()->role == "results")
+                    @if(Auth::user()->role == "boost")
                     <a type="button" class="btn btn-success btn-lg btn-block col-12" href="{{url('productsResults')}}">View Products Results</a><br><br>
 
                     <a type="button" class="btn btn-warning btn-lg btn-block col-12" href="#">JSON Result</a><br><br>
                     
-                    
+                    @endif
+
+                    @if(Auth::user()->role == "results")
+                    <a type="button" class="btn btn-success btn-lg btn-block col-12" href="{{url('productsResults')}}">View Products Results</a><br><br>
                     @endif
                     
                     @if(Auth::user()->role == "price")
@@ -44,6 +65,9 @@
                     @if(Auth::user()->role == "picture")
                     <a type="button" class="btn btn-primary btn-lg btn-block col-12" href="{{url('productsSetPicture')}}">Set Products Picture</a><br><br>
                     <a type="button" class="btn btn-success btn-lg btn-block col-12" href="{{url('productsResults')}}">View Products Results</a><br><br>
+                    @endif
+
+                    @if(Auth::user()->role == "Achat")
                     @endif
 
                 </div>

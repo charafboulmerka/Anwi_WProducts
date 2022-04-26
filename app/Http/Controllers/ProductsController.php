@@ -39,23 +39,12 @@ class ProductsController extends Controller
         return view('products_results');
     }
 
-    public function find(Request $query){
-        $keyword = $query->keyword;
-        $category = $query->category;
-        if($category=="All Categories"){
-            $data2 = Products::query()->where([['title', 'LIKE', '%' . $keyword . '%']])->get();
-        }else{
-            $data2 = Products::query()->where([['title', 'LIKE', '%' . $keyword . '%'],
-            ['category',$category]])->get();
-        }
-        
-
-         return $data2;
-         //return $data2->title;
-     }
-
-    public function product($id){
-        $data = Products::where('id',$id)->get()->first();
-        return view('product',['data'=>$data]);
+    public function addProducts(){
+        return view('add_products');
     }
+
+    public function addObjectives(){
+        return view('add_products');
+    }
+
 }

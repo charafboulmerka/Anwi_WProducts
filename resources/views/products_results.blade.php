@@ -56,6 +56,9 @@
       justify-content: center;
         margin:20px;
       }
+      article {
+        direction: rtl;
+      }
     </style>
 
        @php 
@@ -63,7 +66,9 @@
        @endphp
        <div id="work-in-progress"><div class="work-spinner"><script>$('#work-in-progress').hide();</script></div></div>
 
-    
+    @extends('layouts.app2')
+
+    @section('content')
     <div class="container">
         <div class="row form-group">
                 <label for="date" class="col-sm-1 col-form-label">Date</label>
@@ -86,6 +91,7 @@
        
         </div>
     </div>
+    @endsection
     <script>
               $(function() {
             $('#datepicker').datepicker({
@@ -120,11 +126,12 @@
 
       function start_search(date){
         $('#row').html("");
+        var count = 0;
         const db = firebase.database();
         const d = new Date();
-        console.log(getToday());
         let time = d.getTime();
-        console.log(time);
+        if(document.getElementById("count_products")!=null)
+        document.getElementById("count_products").innerHTML = count;
           var mRef = firebase.database().ref('Products').orderByChild('date').equalTo(date);
         // Add ref of child if any
         mRef.once('value', function(snapshot) {
@@ -134,6 +141,8 @@
            // console.log(childKey);
             var type = childData.type;
             if(type==4){
+              count++;
+              document.getElementById("count_products").innerHTML = count;
               var pic = childData.imageURL;
             var title = childData.title;
             var price = childData.price;
@@ -155,7 +164,7 @@
             }else{
               template += putPicture(pic_final);
             }
-            template += putData(title,rp,id,price,price_store,price_final,description,store,date,type,pic_final);
+            template += putData(title,rp,id,price,price_store,price_final,description,store,date,type,pic_final,count);
             template += build(0);
             
             $('#row').append(template);
@@ -194,22 +203,27 @@
     }
  
 
-    function putData(title,rp,id,price,price_store,price_final,description,store,date,type,pic_final){
-      console.log(date);
+    function putData(title,rp,id,price,price_store,price_final,description,store,date,type,pic_final,count){
         var pre_build = '';
-        pre_build += '<div class="card-body" style="min-height: 350px;">';
-            pre_build += '<b><p class="card-title">'+title+'</p></b>';
+        pre_build += '<div class="card-body" style="min-height: 250px;">';
+            pre_build += '<b><p class="card-title">'+count+'- '+title+'</p></b>';
             pre_build += '<p class="card-title">Boutique : '+store+'</p>';
-            pre_build += '<p class="card-title">Prix de Gros : '+price+' DA</p>';
+            pre_build += '<p class="card-title">Prix de Gros : <b>'+price+' DA</b></p>';
 
-            if(price_final!=null){
-              pre_build += '<p class="card-title">Prix Final : '+price_final+' DA</p>';
+            if(price_store!=null){
+              pre_build += '<p class="card-title">Prix détail : <b>'+price_store+' DA</b></p>';
             }else{
               pre_build += '<p class="card-title">Prix Final : NOT YET</p>';
             }
 
+            if(price_final!=null){
+              pre_build += '<p class="card-title text-danger">Prix Final : <b>'+price_final+' DA</b></p>';
+            }else{
+              pre_build += '<p class="card-title text-danger">Prix Final : NOT YET</p>';
+            }
+
             if(description!=null){
-              pre_build += '<p class="card-title">Description : <a href="#" onclick="bootbox.alert(\'' + description + '\');">Done</a></p>';
+              pre_build += '<p class="card-title">Description : <a href="#" onclick="bootbox.alert(\'<article>' + description + '</article>\');">Done</a></p>';
             }else{
               pre_build += '<p class="card-title">Description : NOT YET</p>';
             }
